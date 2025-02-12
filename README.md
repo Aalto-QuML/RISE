@@ -19,7 +19,6 @@ booktitle={The Thirteenth International Conference on Learning Representations},
 year={2025},
 url={https://openreview.net/forum?id=GsR3zRCRX5}
 }
-
 ```
 
 Note: Please change the device (GPU or CPU) in the files accordingly, depending on which you are running.
