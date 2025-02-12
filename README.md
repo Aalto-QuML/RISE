@@ -1,8 +1,26 @@
-# Robust Simulation-based Inference under missing data (RISE)
+# Robust Simulation-based Inference under missing data via Neural Processes (RISE)
+
+ [Yogesh verma](https://yoverma.github.io/yoerma.github.io/) | [Ayush Bharti](https://bharti-ayush.github.io/) |  [Vikas Garg](https://www.mit.edu/~vgarg/)
+ 
+The code repository for the paper Robust Simulation-based Inference under missing data via Neural Processes, ICLR 2025.
 
 The code is built on the top of the following repo. Please follow the guidelines in the reference repository to install the requisite packages.
 
 Ref: [Learning Robust Statistics for Simulation-Based Inference Under Model Misspecification](https://github.com/huangdaolang/robust-sbi)
+
+## Citation
+If you find this helpful in your research, please consider citing the following paper:
+ ```
+@inproceedings{
+verma2025robust,
+title={Robust Simulation-Based Inference under Missing Data via Neural Processes},
+author={Yogesh Verma and Ayush Bharti and Vikas Garg},
+booktitle={The Thirteenth International Conference on Learning Representations},
+year={2025},
+url={https://openreview.net/forum?id=GsR3zRCRX5}
+}
+
+```
 
 Note: Please change the device (GPU or CPU) in the files accordingly, depending on which you are running.
 
