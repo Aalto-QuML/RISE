@@ -112,24 +112,5 @@ if __name__ == "__main__":
     with open("test/posterior_glm.pkl", "wb") as handle:
             pickle.dump(posterior, handle)
 
-        
-    n_samples = 1000
-    theta_gt = torch.tensor(np.load(f"missing_data/glm_theta_obs.npy"))
-    obs_sample = torch.tensor(np.load(f"missing_data/glm_obs_zero_"+ str(int(args.degree*100))+".npy")).to(device)
-    mask_sample = torch.tensor(np.load(f"missing_data/glm_obs_mask_"+ str(int(args.degree*100))+".npy")).to(device)
-    
-    fully_obs = torch.cat([obs_sample,mask_sample],dim=-1)
-    
-    lengthscale = median_heuristic(post_samples_final.cpu())
-    n_sim = 100
-    rmse_zero_npe = np.zeros(n_sim)
-    mmd_zero_npe = np.zeros(n_sim)
-    for i in range(0, n_sim):
-            post_samples = sample_posteriors(posterior, fully_obs.unsqueeze(1), n_samples)
-            rmse_zero_npe[i] = torch.sqrt(((post_samples.mean(dim=0).detach().cpu()-theta_gt.cpu())**2).mean()).item()
-            mmd_zero_npe[i] = MMD_unweighted(post_samples.detach().cpu(), post_samples_final.cpu(), lengthscale)
-    
-    print(f" RMSE mean={np.mean(rmse_zero_npe)}, MMD mean={np.mean(mmd_zero_npe)}")
-
 
         
