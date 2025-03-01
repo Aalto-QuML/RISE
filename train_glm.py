@@ -95,29 +95,3 @@ if __name__ == "__main__":
     posterior = inference.build_posterior(density_estimator)
     with open("test/posterior_glm.pkl", "wb") as handle:
             pickle.dump(posterior, handle)
-
-    n_samples = 1000
-    theta_gt = torch.tensor(np.load(f"missing_data/glm_theta_obs.npy"))
-    obs_sample = torch.tensor(np.load(f"missing_data/glm_obs_zero_"+ str(int(args.degree*100))+".npy")).to(device)
-    mask_sample = torch.tensor(np.load(f"missing_data/glm_obs_mask_"+ str(int(args.degree*100))+".npy")).to(device)
-
-    max_val = x.max()
-    min_val = x.min()
-
-    lengthscale = median_heuristic(post_samples_final.cpu())
-
-    x_obs_norm = (obs_sample  - min_val)/(max_val - min_val)
-    pred_mean,std,pred_dist= missing_model(x_obs_norm.squeeze(1),mask_sample.squeeze(1))
-
-    x_unnorm = pred_mean*(max_val - min_val) + min_val
-    x_new = mask_sample*obs_sample + (1-mask_sample)*x_unnorm
-
-    n_sim = 100
-    rmse_zero_npe = np.zeros(n_sim)
-    mmd_zero_npe = np.zeros(n_sim)
-    for i in range(0, n_sim):
-            post_samples = sample_posteriors(posterior, x_new.unsqueeze(1), n_samples)
-            rmse_zero_npe[i] = torch.sqrt(((post_samples.mean(dim=0).detach().cpu()-theta_gt.cpu())**2).mean()).item()
-            mmd_zero_npe[i] = MMD_unweighted(post_samples.detach().cpu(), post_samples_final.cpu(), lengthscale)
-    
-    print(f" RMSE mean={np.mean(rmse_zero_npe)}, MMD mean={np.mean(mmd_zero_npe)}")
