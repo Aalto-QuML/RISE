@@ -40,8 +40,6 @@ def create_mask(data,degree):
                 MASK[batch,idx] = 0
         return MASK
 
-def sample_posteriors(posterior, obs, num):
-    return posterior.sample((num,), x=obs, show_progress_bars=False)
  
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
