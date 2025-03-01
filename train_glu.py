@@ -27,39 +27,6 @@ def set_seed(seed: int = 42) -> None:
     # Set a fixed value for the hash seed
     os.environ["PYTHONHASHSEED"] = str(seed)
     print(f"Random seed set as {seed}")
-
-def MMD_unweighted(x, y, lengthscale):
-    """ Approximates the squared MMD between samples x_i ~ P and y_i ~ Q
-    """
-
-    m = x.shape[0]
-    n = y.shape[0]
-
-    z = torch.cat((x, y), dim=0)
-
-    K = kernel_matrix(z, z, lengthscale)
-
-    kxx = K[0:m, 0:m]
-    kyy = K[m:(m + n), m:(m + n)]
-    kxy = K[0:m, m:(m + n)]
-
-    return (1 / m ** 2) * torch.sum(kxx) - (2 / (m * n)) * torch.sum(kxy) + (1 / n ** 2) * torch.sum(kyy)
-    # return (1 / m ** 2) * torch.sum(kxx) - (2 / (m * n)) * torch.sum(kxy)
-
-def median_heuristic(y):
-    a = torch.cdist(y, y)**2
-    return torch.sqrt(torch.median(a / 2))
-
-
-def kernel_matrix(x, y, l):
-    d = torch.cdist(x, y)**2
-
-    kernel = torch.exp(-(1 / (2 * l ** 2)) * d)
-
-    return kernel
-
-def sample_posteriors(posterior, obs, num):
-    return posterior.sample((num,), x=obs, show_progress_bars=False)
  
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
