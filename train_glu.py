@@ -44,7 +44,7 @@ if __name__ == "__main__":
     theta = prior(num_samples=1000)
     x = simulator(theta)
 
-    prior = prior = Uniform(task.prior_params['low'].to(device),task.prior_params['high'].to(device))
+    prior =  Uniform(task.prior_params['low'].to(device),task.prior_params['high'].to(device))
 
     sum_net = GL(input_size=1, hidden_dim=4).to(device)
     neural_posterior = posterior_nn(
