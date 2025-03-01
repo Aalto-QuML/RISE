@@ -1,6 +1,6 @@
 # Robust Simulation-based Inference under missing data via Neural Processes (RISE)
 
- [Yogesh verma](https://yoverma.github.io/yoerma.github.io/) | [Ayush Bharti](https://bharti-ayush.github.io/) |  [Vikas Garg](https://www.mit.edu/~vgarg/)
+ [Yogesh Verma](https://yoverma.github.io/yoerma.github.io/) | [Ayush Bharti](https://bharti-ayush.github.io/) |  [Vikas Garg](https://www.mit.edu/~vgarg/)
  
 The code repository for the paper Robust Simulation-based Inference under missing data via Neural Processes, ICLR 2025.
 
@@ -42,6 +42,7 @@ To run the task on GLU and GLM dataset for mcar/mnar under a certain degree run,
 python -u train_glm/glu.py --degree degree --type mcar/mnar
 ```
 
+Note: We are also constantly updating and revising the repo to make it more adaptable in a general way, and finidng bugs and removing them and modifying certain parts.
 
 ## License
 This code is released under the MIT License.
