@@ -55,7 +55,7 @@ if __name__ == "__main__":
     post_samples_final = task.get_reference_posterior_samples(num_observation=1)
     post_samples_final = post_samples_final[:1000]
 
-    prior = prior = Uniform(task.prior_params['low'].to(device),task.prior_params['high'].to(device))
+    prior =  Uniform(task.prior_params['low'].to(device),task.prior_params['high'].to(device))
 
     sum_net = GL(input_size=1, hidden_dim=4).to(device)
     neural_posterior = posterior_nn(
