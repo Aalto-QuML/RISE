@@ -70,9 +70,12 @@ if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     #set_seed(4)
     task = sbibm.get_task('gaussian_linear_uniform')
-    prior = task.prior_dist
+    prior = task.get_prior()
+    simulator = task.get_simulator()
     post_samples_final = task.get_reference_posterior_samples(num_observation=1)
     post_samples_final = post_samples_final[:1000]
+    theta = prior(num_samples=1000)
+    x = simulator(theta)
 
     prior = prior = Uniform(task.prior_params['low'].to(device),task.prior_params['high'].to(device))
 
@@ -84,8 +87,6 @@ if __name__ == "__main__":
             num_transforms=3)
 
     inference = SNPE(prior=prior, density_estimator=neural_posterior,types ='glu',degree=args.degree,missing=args.type, device='cuda')
-    theta = torch.tensor(np.load("missing_data/glu_theta_1000.npy")).to(device)
-    x = torch.tensor(np.load("missing_data/glu_x_1000.npy")).to(device)
 
     density_estimator,missing_model = inference.append_simulations(theta, x.unsqueeze(1)).train(
             distance='none', x_obs=None, beta=0)
@@ -94,29 +95,3 @@ if __name__ == "__main__":
     posterior = inference.build_posterior(density_estimator)
     with open("test/posterior_glu.pkl", "wb") as handle:
             pickle.dump(posterior, handle)
-
-    n_samples = 1000
-    theta_gt = torch.tensor(np.load(f"missing_data/glu_theta_obs.npy"))
-    obs_sample = torch.tensor(np.load(f"missing_data/glu_obs_zero_"+ str(int(args.degree*100))+".npy")).to(device)
-    mask_sample = torch.tensor(np.load(f"missing_data/glu_obs_mask_"+ str(int(args.degree*100))+".npy")).to(device)
-
-    max_val = x.max()
-    min_val = x.min()
-
-    lengthscale = median_heuristic(post_samples_final.cpu())
-
-    x_obs_norm = (obs_sample  - min_val)/(max_val - min_val)
-    pred_mean,std,pred_dist= missing_model(x_obs_norm.squeeze(1),mask_sample.squeeze(1))
-
-    x_unnorm = pred_mean*(max_val - min_val) + min_val
-    x_new = mask_sample*obs_sample + (1-mask_sample)*x_unnorm
-
-    n_sim = 100
-    rmse_zero_npe = np.zeros(n_sim)
-    mmd_zero_npe = np.zeros(n_sim)
-    for i in range(0, n_sim):
-            post_samples = sample_posteriors(posterior, x_new.unsqueeze(1), n_samples)
-            rmse_zero_npe[i] = torch.sqrt(((post_samples.mean(dim=0).detach().cpu()-theta_gt.cpu())**2).mean()).item()
-            mmd_zero_npe[i] = MMD_unweighted(post_samples.detach().cpu(), post_samples_final.cpu(), lengthscale)
-    
-    print(f" RMSE mean={np.mean(rmse_zero_npe)}, MMD mean={np.mean(mmd_zero_npe)}")
